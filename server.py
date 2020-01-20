@@ -4,10 +4,11 @@ from time import sleep
 app = Flask(__name__, template_folder='.')
 config = {
   # 'source': '/opt/awscam/out/ch2_out.mjpeg'
+  'source': 0,
   'port': 9080,
   'debug' : True, 
   'scale_percent': 30,
-  'sleep_time':5
+  'sleep_time':0.5
 }
 camera=VideoCamera(config)
 @app.route('/')
@@ -26,9 +27,9 @@ def video_feed():
     return Response(gen(camera),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/static') # not working yet.
+@app.route('/static') 
 def static_file():
-    response = make_response(camera.get_latest_frame())
+    response = make_response(camera.get_latest_full_frame())
     response.headers.set('Content-Type', 'image/jpeg')
     response.headers.set(
         'Content-Disposition', 'attachment', filename='static.jpg')
